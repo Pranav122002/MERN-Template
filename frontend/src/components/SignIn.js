@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+const API_BASE_URL = "http://localhost:5000/api";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ export default function SignIn() {
       return;
     }
 
-    fetch("http://localhost:5000/signin", {
+    fetch(`${API_BASE_URL}/signin`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
@@ -36,13 +37,11 @@ export default function SignIn() {
           notifyA(data.error);
         } else {
           notifyB("Signed In Successfully");
-          console.log(data);
           localStorage.setItem("jwt", data.token);
           localStorage.setItem("user", JSON.stringify(data.user));
 
           navigate("/home");
         }
-        console.log(data);
       });
   };
 

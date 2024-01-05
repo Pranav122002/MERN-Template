@@ -4,44 +4,41 @@ const mongoose = require("mongoose");
 const USER = mongoose.model("USER");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const JWT_SECRET  = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET;
 
-router.post("/signup", (req, res) => { 
-    
+router.post("/api/signup", (req, res) => {
   const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
     return res.status(422).json({ error: "Please add all the fields" });
   }
 
-  USER.findOne({ $or: [{ email: email }] }).then(
-    (savedUser) => {
-      if (savedUser) {
-        return res
-          .status(422)
-          .json({ error: "User already exist with that email" });
-      }
-      bcrypt.hash(password, 12).then((hashedPassword) => {
-        const user = new USER({
-          name,
-          email,
-          password: hashedPassword,
-        });
-
-        user
-          .save()
-          .then((user) => {
-            res.json({ message: "Registered successfully" });
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      });
+  USER.findOne({ $or: [{ email: email }] }).then((savedUser) => {
+    if (savedUser) {
+      return res
+        .status(422)
+        .json({ error: "User already exist with that email" });
     }
-  );
+    bcrypt.hash(password, 12).then((hashedPassword) => {
+      const user = new USER({
+        name,
+        email,
+        password: hashedPassword,
+      });
+
+      user
+        .save()
+        .then((user) => {
+          res.json({ message: "Registered successfully" });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  });
 });
 
-router.post("/signin", (req, res) => {
+router.post("/api/signin", (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -60,9 +57,7 @@ router.post("/signin", (req, res) => {
           const token = jwt.sign({ _id: savedUser.id }, JWT_SECRET);
           const { _id, name, email } = savedUser;
 
-          res.json({ token, user: { _id, name, email} });
-
-          console.log({ token, user: { _id, name, email } });
+          res.json({ token, user: { _id, name, email } });
         } else {
           return res.status(422).json({ error: "Invalid password" });
         }
@@ -70,7 +65,5 @@ router.post("/signin", (req, res) => {
       .catch((err) => console.log(err));
   });
 });
-
-
 
 module.exports = router;

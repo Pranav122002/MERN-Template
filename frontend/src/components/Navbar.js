@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+const API_BASE_URL = "http://localhost:5000/api";
 
 export default function Navbar({ login }) {
   const navigate = useNavigate();
@@ -13,29 +14,19 @@ export default function Navbar({ login }) {
   useEffect(() => {
     const token = localStorage.getItem("jwt");
     if (!token) {
-      navigate("./signup");
-    } else {
-      fetch(`/user/${JSON.parse(localStorage.getItem("user"))._id}`, {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("jwt"),
-        },
-      })
-        .then((res) => res.json())
-        .then((result) => {
-          setUser(result.user);
-        });
+      navigate("/signin");
     }
   }, []);
 
   useEffect(() => {
-    setOnHome(location.pathname === "/");
+    setOnHome(location.pathname === "/home");
     setOnChat(location.pathname === "/chat");
     setOnProfile(location.pathname === "/profile");
   }, [location]);
 
   const Navigation = () => {
     const token = localStorage.getItem("jwt");
-    
+
     if (token) {
       return [
         <>
@@ -56,11 +47,12 @@ export default function Navbar({ login }) {
             <li>Profile</li>
           </NavLink>
 
-          <NavLink to="/signin"   onClick={() => {
-                  
-                  localStorage.clear();
-                 
-                }}>
+          <NavLink
+            to="/signin"
+            onClick={() => {
+              localStorage.clear();
+            }}
+          >
             <li>Log Out</li>
           </NavLink>
         </>,
@@ -72,7 +64,7 @@ export default function Navbar({ login }) {
 
   return [
     <>
-      <ul >{Navigation()}</ul>
+      <ul>{Navigation()}</ul>
     </>,
   ];
 }
