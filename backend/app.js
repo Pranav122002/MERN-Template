@@ -36,7 +36,6 @@ const server = app.listen(PORT, () => {
   console.log("Server is running on PORT" + " " + PORT + " ...");
 });
 
-
 const io = socket(server, {
   cors: {
     origin: "http://localhost:3000",

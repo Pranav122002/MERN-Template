@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-const API_BASE_URL = "http://localhost:5000/api";
 
 export default function Navbar({ login }) {
   const navigate = useNavigate();
